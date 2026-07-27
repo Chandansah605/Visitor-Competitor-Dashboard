@@ -817,6 +817,7 @@ const EMBEDDED_DATA = [{"gate":"Main Entrance","date":"2026-01-01","time":"08:32
    INIT
 ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
+  try { applyEmbedMode(); } catch (e) {}   // ?embed=resident360 -> show ONLY the Residence 360 tab (used when iframed inside SSG_HS_PIPELINE)
   initSplash();
   setupUpload();
   setupFilters();
@@ -838,7 +839,7 @@ window.addEventListener('DOMContentLoaded', () => {
   try { ALL_VMS = (function(){ var s=null; try{s=JSON.parse(localStorage.getItem('VBD_VMS_DATA')||'null');}catch(e){} return (s&&s.recs)?s.recs:(EMBEDDED_DATA||[]); })(); } catch(e){}
     loadCentralData();
   loadCentralSnapshots();
-  try { switchTab((location.hash === '#visitor' || location.hash === '#telemetry') ? 'tab1' : 'tab2'); } catch(e){}
+  try { switchTab((!IS_EMBED && (location.hash === '#visitor' || location.hash === '#telemetry')) ? 'tab1' : 'tab2'); } catch(e){}
 });
 
 /* ============================================================
@@ -1149,6 +1150,17 @@ function switchTab(tabId) {
 /* ============================================================
    SPLASH / LOGIN SCREEN — falling-line animation + dismiss
 ============================================================ */
+// Embed mode: when the dashboard is iframed inside SSG_HS_PIPELINE with ?embed=resident360,
+// hide its own header ribbon + tab switcher and show ONLY the Residence 360 tab (the host app
+// supplies the surrounding chrome). Sign-in (splash popup) still works normally.
+var IS_EMBED = false;
+try { IS_EMBED = /[?&]embed=/i.test(location.search) || /(^|[#&])embed(=|$)/i.test(location.hash); } catch (e) { IS_EMBED = false; }
+function applyEmbedMode() {
+  if (!IS_EMBED) return;
+  document.documentElement.classList.add('embed-mode');
+  if (document.body) document.body.classList.add('embed-mode');
+}
+
 function initSplash() {
   const overlay = document.getElementById('splashOverlay');
   if (!overlay) return;
@@ -3921,6 +3933,17 @@ window.DV = DV;
   #unitMatrixTable td.um-unit { font-size:12px !important; font-weight:700 !important; }
   #unitMatrixTable th, #unitMatrixTable td { border-right:1px solid #eef2f7; }
   #unitMatrixTable th:last-child, #unitMatrixTable td:last-child { border-right:none; }
+
+  /* ===== EMBED MODE (iframed inside SSG_HS_PIPELINE as ?embed=resident360) =====
+     Hide this dashboard's own header ribbon + the two tab-switch buttons so ONLY the
+     Residence 360 tab shows; the host SPA provides the surrounding chrome. Keep the
+     Project dropdown (right side of the tab-bar) so users can still switch project. */
+  html.embed-mode .header { display:none !important; }
+  html.embed-mode .tab-bar { margin-top:0; border-top:none; box-shadow:none; padding-top:6px; }
+  html.embed-mode .tab-bar .tab-btn { display:none !important; }
+  html.embed-mode #autoSaveBtn { display:none !important; }
+  html.embed-mode #tab2 .container { padding-top:6px; }
+  html.embed-mode .topfreeze { position:static; }   /* host page scrolls the iframe; no sticky needed */
 </style>
 </body>
 </html>
