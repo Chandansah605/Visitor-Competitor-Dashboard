@@ -4,6 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Visitor &amp; Competitor Dashboard</title>
+<script>/* run BEFORE paint: mark embed early (kills the sign-in/splash flash) + one-time token arm */try{
+  if(/[?&]embed=/i.test(location.search)||/(^|[#&])embed(=|$)/i.test(location.hash))document.documentElement.classList.add('embed-mode');
+  var _gt=/[?&]ghtoken=([^&#]+)/i.exec(location.search);
+  if(_gt){ try{localStorage.setItem('vbd_gh_token',decodeURIComponent(_gt[1]));localStorage.setItem('vbd_autosave','1');}catch(e){}
+    try{history.replaceState(null,'',location.pathname+location.search.replace(/([?&])ghtoken=[^&#]*/i,'$1').replace(/[?&]+$/,'')+location.hash);}catch(e){} }
+}catch(e){}</script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -302,6 +308,7 @@
     transition: opacity .7s ease, transform .7s ease;
   }
   .splash-overlay.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+  html.embed-mode .splash-overlay, html.embed-mode #splashOverlay { display: none !important; }  /* EMBED: never show the sign-in splash (no flash) */
   /* Radar circles */
   .splash-overlay::before {
     content: ''; position: absolute; left: 50%; top: 50%;
@@ -643,7 +650,6 @@
     <span style="display:inline-block;width:18px;height:18px;border:3px solid #cfe0ee;border-top-color:#145A95;border-radius:50%;animation:bktspin .8s linear infinite;vertical-align:middle;margin-right:8px;"></span>Loading live bucket data…
   </div>
   <div id="bucketGrid2" class="bucket-row"></div>
-  <div id="histStatus" style="margin:8px 2px 0;font-size:11.5px;color:#5a6b7d;display:none;"></div>
 
   <div id="unitMatrixWrap" class="card">
     <style>
@@ -817,6 +823,7 @@ const EMBEDDED_DATA = [{"gate":"Main Entrance","date":"2026-01-01","time":"08:32
    INIT
 ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
+  try { applyEmbedMode(); } catch (e) {}   // ?embed=resident360 -> show ONLY the Residence 360 tab (used when iframed inside SSG_HS_PIPELINE)
   initSplash();
   setupUpload();
   setupFilters();
@@ -838,7 +845,7 @@ window.addEventListener('DOMContentLoaded', () => {
   try { ALL_VMS = (function(){ var s=null; try{s=JSON.parse(localStorage.getItem('VBD_VMS_DATA')||'null');}catch(e){} return (s&&s.recs)?s.recs:(EMBEDDED_DATA||[]); })(); } catch(e){}
     loadCentralData();
   loadCentralSnapshots();
-  try { switchTab((location.hash === '#visitor' || location.hash === '#telemetry') ? 'tab1' : 'tab2'); } catch(e){}
+  try { switchTab((!IS_EMBED && (location.hash === '#visitor' || location.hash === '#telemetry')) ? 'tab1' : 'tab2'); } catch(e){}
 });
 
 /* ============================================================
@@ -1117,7 +1124,7 @@ function saveSnapshot(weekKey, counts) {
       var guardKey = 'vbd_snap_pushed_' + pk + '_' + today;
       if (typeof ghAuto === 'function' && ghAuto() && typeof ghToken === 'function' && ghToken() && localStorage.getItem(guardKey) !== '1') {
         ghPutBucketsJson(ghToken(), buildBucketsJsonStr(), 'Weekly bucket snapshot ' + pk + ' (' + today + ')')
-          .then(function () { localStorage.setItem(guardKey, '1'); if (typeof toast === 'function') toast('Weekly snapshot saved to repo (' + pk + ')', 'ok'); })
+          .then(function () { localStorage.setItem(guardKey, '1'); })
           .catch(function (e) { console.warn('snapshot publish failed', e.message); });
       }
     } catch (e2) {}
@@ -1149,9 +1156,21 @@ function switchTab(tabId) {
 /* ============================================================
    SPLASH / LOGIN SCREEN — falling-line animation + dismiss
 ============================================================ */
+// Embed mode: when the dashboard is iframed inside SSG_HS_PIPELINE with ?embed=resident360,
+// hide its own header ribbon + tab switcher and show ONLY the Residence 360 tab (the host app
+// supplies the surrounding chrome). Sign-in (splash popup) still works normally.
+var IS_EMBED = false;
+try { IS_EMBED = /[?&]embed=/i.test(location.search) || /(^|[#&])embed(=|$)/i.test(location.hash); } catch (e) { IS_EMBED = false; }
+function applyEmbedMode() {
+  if (!IS_EMBED) return;
+  document.documentElement.classList.add('embed-mode');
+  if (document.body) document.body.classList.add('embed-mode');
+}
+
 function initSplash() {
   const overlay = document.getElementById('splashOverlay');
   if (!overlay) return;
+  if (IS_EMBED) { try { overlay.remove(); } catch (e) {} document.body.style.overflow = ''; return; }  // EMBED: no sign-in splash, no scroll lock
 
   // Block dashboard scroll while splash is visible
   document.body.style.overflow = 'hidden';
@@ -1636,27 +1655,7 @@ function renderSegBuckets() {
       </div>
     </div>`;
   }).join('');
-  try { renderHistStatus(all, wkPrev, wkPrev2); } catch (e) {}
   try { if (typeof renderUnitMatrix === 'function') renderUnitMatrix(); } catch (e) {}
-}
-
-// Weekly-history save status — makes the auto-save state visible so history never silently stops.
-function renderHistStatus(all, wkPrev, wkPrev2) {
-  var el = document.getElementById('histStatus'); if (!el) return;
-  var armed = (typeof ghToken === 'function' && ghToken()) && (typeof ghAuto === 'function' ? ghAuto() : true);
-  var havePrev = all && all[wkPrev] && all[wkPrev].counts;
-  var havePrev2 = all && all[wkPrev2] && all[wkPrev2].counts;
-  el.style.display = 'block';
-  if (!armed) {
-    el.innerHTML = '⚠️ <b>Weekly history saving is OFF</b> — Last Week / Last Two Week counts and unit movement are only recorded while this is on. ' +
-      '<a href="#" onclick="toggleAutoSave();try{recomputeAll()}catch(e){};return false;" style="color:#145A95;font-weight:700;">Turn on weekly history</a> (paste a GitHub token once — stored only in this browser).';
-  } else if (!havePrev && !havePrev2) {
-    el.innerHTML = '🟢 Weekly history saving is <b>ON</b>. This week is now being recorded — Last Week fills in next week and Last Two Week the week after (past weeks weren’t recorded, so they can’t be back-filled).';
-  } else if (!havePrev || !havePrev2) {
-    el.innerHTML = '🟢 Weekly history saving is <b>ON</b>. History is building — one more week and all three columns will be populated.';
-  } else {
-    el.innerHTML = '🟢 Weekly history saving is <b>ON</b>. Last Two Week, Last Week and Current Week are all recorded.';
-  }
 }
 
 function showSegDrill(key) {
@@ -3264,6 +3263,7 @@ async function ghPutFile(token, path, b64content, message) {
   var owner = location.hostname.split('.')[0];
   var parts = location.pathname.split('/').filter(Boolean);
   var repo = parts.length ? parts[0] : '';
+  if (location.hostname.indexOf('github.io') < 0) { owner = 'Strive-Services-Group'; repo = 'Visitor-Competitor-Dashboard'; }  // embedded off GitHub Pages (e.g. HS SWA) -> target the canonical repo
   if (!owner || !repo) throw new Error('Cannot determine repo from URL (host the page first)');
   var api = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path;
   var headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
@@ -3921,6 +3921,17 @@ window.DV = DV;
   #unitMatrixTable td.um-unit { font-size:12px !important; font-weight:700 !important; }
   #unitMatrixTable th, #unitMatrixTable td { border-right:1px solid #eef2f7; }
   #unitMatrixTable th:last-child, #unitMatrixTable td:last-child { border-right:none; }
+
+  /* ===== EMBED MODE (iframed inside SSG_HS_PIPELINE as ?embed=resident360) =====
+     Hide this dashboard's own header ribbon + the two tab-switch buttons so ONLY the
+     Residence 360 tab shows; the host SPA provides the surrounding chrome. Keep the
+     Project dropdown (right side of the tab-bar) so users can still switch project. */
+  html.embed-mode .header { display:none !important; }
+  html.embed-mode .tab-bar { margin-top:0; border-top:none; box-shadow:none; padding-top:6px; }
+  html.embed-mode .tab-bar .tab-btn { display:none !important; }
+  html.embed-mode #autoSaveBtn { display:none !important; }
+  html.embed-mode #tab2 .container { padding-top:6px; }
+  html.embed-mode .topfreeze { position:static; }   /* host page scrolls the iframe; no sticky needed */
 </style>
 </body>
 </html>
