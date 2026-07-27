@@ -18,18 +18,30 @@
           "A+": 6,
           "A": 186,
           "B": 30,
+          "C": 97,
+          "D": 10,
+          "E": 46,
+          "F": 2
+        },
+        "ts": "2026-07-24T10:09:15.386Z"
+      },
+      "2026-W31": {
+        "counts": {
+          "A+": 5,
+          "A": 186,
+          "B": 31,
           "C": 98,
           "D": 10,
           "E": 46,
           "F": 2
         },
-        "ts": "2026-07-21T11:36:51.106Z"
+        "ts": "2026-07-27T07:19:50.043Z"
       }
     }
   },
   "_baselines": {
     "BALQIS RESIDENCE": {
-      "week": "2026-W30",
+      "week": "2026-W31",
       "units": {
         "BALQIS BLOCK A_APARTMENT-1001": "E",
         "BALQIS BLOCK A_APARTMENT-1002": "A",
@@ -48,7 +60,7 @@
         "BALQIS BLOCK A_APARTMENT-208": "B",
         "BALQIS BLOCK A_APARTMENT-301": "A",
         "BALQIS BLOCK A_APARTMENT-302": "A",
-        "BALQIS BLOCK A_APARTMENT-303": "A+",
+        "BALQIS BLOCK A_APARTMENT-303": "B",
         "BALQIS BLOCK A_APARTMENT-304": "A",
         "BALQIS BLOCK A_APARTMENT-305": "A",
         "BALQIS BLOCK A_APARTMENT-306": "E",
@@ -332,7 +344,7 @@
     "BALQIS BLOCK A_APARTMENT-208": "B",
     "BALQIS BLOCK A_APARTMENT-301": "A",
     "BALQIS BLOCK A_APARTMENT-302": "A",
-    "BALQIS BLOCK A_APARTMENT-303": "A+",
+    "BALQIS BLOCK A_APARTMENT-303": "B",
     "BALQIS BLOCK A_APARTMENT-304": "A",
     "BALQIS BLOCK A_APARTMENT-305": "A",
     "BALQIS BLOCK A_APARTMENT-306": "E",
@@ -596,6 +608,6 @@
     "BALQIS VILLAS_VILLA-8": "A",
     "BALQIS VILLAS_VILLA-9": "A"
   },
-  "_unitsWeek": "2026-W30",
-  "_unitsDate": "2026-07-21"
+  "_unitsWeek": "2026-W31",
+  "_unitsDate": "2026-07-27"
 }
