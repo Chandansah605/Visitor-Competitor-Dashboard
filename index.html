@@ -2542,7 +2542,7 @@ function renderPurposeDeepDive() {
         onClick: (e, els) => {
           if (els[0]) {
             const i = els[0].index;
-            if (i === 0) showKpiDrill('sc');
+            if (i === 0) showScServiceDrill(bucket.svc, bucket.label);
             else if (topCompetitors[i-1]) showCompetitorDrill(topCompetitors[i-1][0]);
           }
         }
@@ -2701,6 +2701,18 @@ function openModal(title, html) {
   document.getElementById('modalOverlay').classList.add('show');
 }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+function showScServiceDrill(svc, label) {  // S&C / Candoo visits for ONE service only (per-service card bar), grouped by unit
+  var proj = (typeof SELECTED_PROJECT !== 'undefined' ? SELECTED_PROJECT : '');
+  var lbl = label || ((typeof canonLabel === 'function') ? canonLabel(svc) : svc);
+  var rows = (typeof ourVisitRowsForProject === 'function' ? ourVisitRowsForProject() : []).filter(function (r) { return r.service === svc; });
+  var byUnit = {};
+  rows.forEach(function (r) { var u = r.unit || '(unknown)'; byUnit[u] = (byUnit[u] || 0) + 1; });
+  var ukeys = Object.keys(byUnit).sort();
+  var brows = ukeys.map(function (u) { return '<tr><td>' + escHtml(u) + '</td><td class="num">' + byUnit[u] + '</td><td>' + escHtml(lbl) + '</td></tr>'; }).join('') || '<tr><td colspan="3" style="color:#9aa7b5;">No visits</td></tr>';
+  var html = '<p style="color:var(--muted);margin-top:0;">S &amp; C / Candoo visits (from bookings) for <b>' + escHtml(proj) + '</b> &middot; <b>' + escHtml(lbl) + '</b> &mdash; <b>' + rows.length.toLocaleString() + '</b> visits across <b>' + ukeys.length + '</b> units (excludes Canceled &amp; Team Leader/Member).</p>' +
+    '<div class="table-scroll" style="max-height:600px;"><table><thead><tr><th>Building / Unit</th><th class="num">Visits</th><th>Service</th></tr></thead><tbody>' + brows + '</tbody></table></div>';
+  openModal('S &amp; C / Candoo Visits (Bookings) &mdash; ' + escHtml(proj) + ' &middot; ' + escHtml(lbl), html);
+}
 
 function showKpiDrill(kind) {
   let rows = [], title = '', sub = [];
