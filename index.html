@@ -1699,6 +1699,9 @@ function renderHistStatus(all, wkPrev, wkPrev2) {
   var armed = (typeof ghToken === 'function' && ghToken()) && (typeof ghAuto === 'function' ? ghAuto() : true);
   var havePrev = all && all[wkPrev] && all[wkPrev].counts;
   var havePrev2 = all && all[wkPrev2] && all[wkPrev2].counts;
+  // Status note hidden per request — weekly history saving still runs in the background
+  // (saveSnapshot -> ghPutBucketsJson auto-commit). Keep the box collapsed and empty.
+  el.style.display = 'none'; el.innerHTML = ''; return;
   el.style.display = 'block';
   if (!armed) {
     el.innerHTML = '⚠️ <b>Weekly history saving is OFF</b> — Last Week / Last Two Week counts and unit movement are only recorded while this is on. ' +
