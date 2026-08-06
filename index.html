@@ -541,6 +541,7 @@
   <div style="margin-left:auto; display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);">
     <button class="btn" style="padding:5px 10px;font-size:12px;" onclick="exportAllBuckets()">📥 Export All Buckets</button>
     <button id="autoSaveBtn" class="btn" style="padding:5px 10px;font-size:12px;background:#94A3B8;" onclick="toggleAutoSave()" title="Auto-publish weekly bucket history &amp; baselines to the repo (token stays in this browser only)">☁ Auto-save: Off</button>
+    <button id="recAllBtn" class="btn" style="padding:5px 10px;font-size:12px;background:#2E8B57;" onclick="recordAllProjectsWeekly({manual:true})" title="Record THIS week's buckets for EVERY project now, so Last Week / Last Two Week build for all projects (needs Auto-save on + CRM sign-in)">☁ Record all now</button>
     <span id="dateRangeCtl" style="display:inline-flex;align-items:center;gap:5px;" title="Filters every analysis section (KPIs, competitors, trend, deep-dive) — NOT the telemetry table below">📅 <input type="date" id="dateFrom" onchange="applyDateRange()" style="border:1px solid #cfe0ee;border-radius:7px;padding:3px 6px;font-size:12px;color:var(--deep-ocean);background:#fff;cursor:pointer;"><span style="color:var(--muted);">–</span><input type="date" id="dateTo" onchange="applyDateRange()" style="border:1px solid #cfe0ee;border-radius:7px;padding:3px 6px;font-size:12px;color:var(--deep-ocean);background:#fff;cursor:pointer;"><button class="btn" style="padding:3px 8px;font-size:11px;background:#94A3B8;" onclick="clearDateRange()" title="Clear the date range">✕</button></span>
     <span>📍 Project: <select id="projectFilter" onchange="applyProject(this.value)" style="font-weight:700;color:var(--deep-ocean);border:1px solid #cfe0ee;border-radius:7px;padding:3px 8px;font-size:13px;background:#fff;cursor:pointer;"><option value="BALQIS RESIDENCE" selected>BALQIS RESIDENCE</option></select></span>
   </div>
@@ -1074,7 +1075,127 @@ function showBktLoading(on) { var el = document.getElementById('bktLoading'); if
 function refreshProjectBookings() {
   var p = SELECTED_PROJECT;
   showBktLoading(true);
-  return fetchProjectBookings(p).then(function () { if (SELECTED_PROJECT === p) recomputeAll(); showBktLoading(false); }).catch(function () { showBktLoading(false); });
+  return fetchProjectBookings(p).then(function () { if (SELECTED_PROJECT === p) recomputeAll(); showBktLoading(false); scheduleWeeklyAllSnapshot(); }).catch(function () { showBktLoading(false); });
+}
+
+/* ============================================================
+   WEEKLY ALL-PROJECT HISTORY (auto + manual)
+   Records THIS week's bucket counts for EVERY project in the selector, so Last Week /
+   Last Two Week build for all of them — not just the project someone happens to open.
+   Runs at most once per ISO week automatically (after CRM sign-in), or on demand via the
+   "Record all now" button. Fully isolated: the only mutation of the live view is a
+   SYNCHRONOUS swap -> classify -> restore (no await inside, so the UI can never observe
+   it), and every step is wrapped in try/catch so the dashboard is never affected.
+   Past weeks cannot be back-filled — history only accrues from the week this starts.
+============================================================ */
+var _allSnapScheduled = false;
+function scheduleWeeklyAllSnapshot() {
+  try {
+    if (_allSnapScheduled) return;
+    if (typeof oppAccount === 'undefined' || !oppAccount) return;          // need CRM sign-in
+    if (typeof ghToken !== 'function' || !ghToken()) return;               // need saving armed
+    if (typeof ghAuto === 'function' && !ghAuto()) return;
+    _allSnapScheduled = true;
+    setTimeout(function () { try { recordAllProjectsWeekly(); } catch (e) {} }, 9000);
+  } catch (e) {}
+}
+// Headless twin of fetchProjectOpps: returns the per-unit opp map WITHOUT setting OPP_DATA
+// or re-rendering, so it can run in the background. Logic is 1:1 with fetchProjectOpps.
+async function fetchProjectOppsHeadless(project) {
+  if (typeof oppCrmGet !== 'function') return {};
+  var base = OPP_CRM_API_BASE, F = '@OData.Community.Display.V1.FormattedValue';
+  var safeNm = String(project).replace(/'/g, "''");
+  var pj = await oppCrmGet(base + "/msdyn_functionallocations?$select=msdyn_functionallocationid&$filter=" + encodeURIComponent("msdyn_name eq '" + safeNm + "'"));
+  var pids = (pj.value || []).map(function (x) { return x.msdyn_functionallocationid; });
+  if (!pids.length) {
+    try {
+      var pj2 = await oppCrmGet(base + "/msdyn_functionallocations?$select=msdyn_functionallocationid&$filter=" + encodeURIComponent("startswith(msdyn_name,'" + safeNm + "')"));
+      pids = (pj2.value || []).map(function (x) { return x.msdyn_functionallocationid; });
+    } catch (e2) {}
+  }
+  if (!pids.length) return {};
+  var selq = "$select=ssg_textdepartment,createdon,ssg_homeservicegates,_ssg_building_value,_ssg_unit_value";
+  var oflt = "(" + pids.map(function (g) { return "_ssg_communityproject_value eq " + g; }).join(" or ") + ")";
+  var u2 = base + "/opportunities?" + selq + "&$filter=" + encodeURIComponent(oflt);
+  var recs = [], guard = 0;
+  while (u2 && guard < 25) { var j = await oppCrmGet(u2); recs = recs.concat(j.value || []); u2 = j['@odata.nextLink'] || null; guard++; }
+  var per = {};
+  for (var i = 0; i < recs.length; i++) {
+    var o = recs[i], b = o['_ssg_building_value' + F] || '', un = o['_ssg_unit_value' + F] || '';
+    if (!b && !un) continue;
+    var key = b + '_' + un, gate = (o['ssg_homeservicegates' + F] || '').trim(), dept = (o.ssg_textdepartment || '').trim();
+    var ds = ''; if (o.createdon) { var d = new Date(new Date(o.createdon).getTime() + 4 * 3600 * 1000); ds = d.toISOString().slice(0, 10); }
+    if (!per[key]) per[key] = { w: 0, n: 0, t: 0, lw: '', ew: '', wd: [], nd: [], _wd: new Set(), _nd: new Set() };
+    var e = per[key]; e.t++;
+    if (gate === OPP_WON_GATE) { e.w++; if (ds) { if (!e.lw || ds > e.lw) e.lw = ds; if (!e.ew || ds < e.ew) e.ew = ds; } if (dept) e._wd.add(dept); }
+    else { e.n++; if (dept) e._nd.add(dept); }
+  }
+  for (var k in per) { per[k].wd = [...per[k]._wd]; per[k].nd = [...per[k]._nd]; delete per[k]._wd; delete per[k]._nd; }
+  return per;
+}
+async function recordAllProjectsWeekly(opts) {
+  opts = opts || {}; var manual = !!opts.manual;
+  try {
+    if (typeof ghToken !== 'function' || !ghToken() || (typeof ghAuto === 'function' && !ghAuto())) { if (manual && typeof toast === 'function') toast('Turn on Auto-save (paste a GitHub token) first.', 'warn'); return; }
+    if (typeof oppAccount === 'undefined' || !oppAccount) { if (manual && typeof toast === 'function') toast('Sign in to CRM first, then try again.', 'warn'); return; }
+    if (typeof classifyAt !== 'function' || typeof getISOWeek !== 'function' || typeof filterToBalqis !== 'function') return;
+    var wk = getISOWeek(new Date());
+    var guardKey = 'vbd_allproj_snap_' + wk;
+    if (!manual && localStorage.getItem(guardKey) === '1') return;          // auto: once per ISO week
+    var sel = document.getElementById('projectFilter');
+    var projects = sel ? Array.prototype.map.call(sel.options, function (o) { return o.value; }) : [];
+    if (!projects.length) return;
+    window.OPP_CENTRAL_SNAPS_ALL = window.OPP_CENTRAL_SNAPS_ALL || {};
+    var today = (typeof fmtDate === 'function') ? fmtDate(new Date()) : new Date().toISOString().slice(0, 10);
+    var filled = 0, skipped = 0;
+    if (manual && typeof toast === 'function') toast('Recording weekly buckets for all projects…', 'ok');
+    for (var pi = 0; pi < projects.length; pi++) {
+      var p = String(projects[pi] || '').toUpperCase(); if (!p) continue;
+      // Never overwrite a project already recorded this week (e.g. the one open now, saved on-view).
+      if (OPP_CENTRAL_SNAPS_ALL[p] && OPP_CENTRAL_SNAPS_ALL[p][wk]) { skipped++; continue; }
+      var cb = (typeof PROJECT_BUILDINGS !== 'undefined' && PROJECT_BUILDINGS[p]) ? PROJECT_BUILDINGS[p] : null;
+      if (!cb || !cb.size) { skipped++; continue; }
+      try {
+        // --- async fetch this project's engagement data; bookings loader sets PROJECT_BOOKING_MAP
+        //     only at its very end, which we restore in the same continuation (no await between). ---
+        var liveBK = PROJECT_BOOKING_MAP;
+        await fetchProjectBookings(p);
+        var bmap = (typeof PROJECT_BOOKING_CACHE !== 'undefined' && PROJECT_BOOKING_CACHE[p]) ? PROJECT_BOOKING_CACHE[p] : (PROJECT_BOOKING_MAP || {});
+        PROJECT_BOOKING_MAP = liveBK;
+        var omap = await fetchProjectOppsHeadless(p);
+        // --- SYNCHRONOUS block: capture the CURRENT live view, swap in p's data, classify with the
+        //     exact same classifyAt(), then restore. No await here => the UI can't observe the swap,
+        //     and restoring to freshly-captured live state means a user navigation is never clobbered. ---
+        var counts = null, hasUniverse = false;
+        (function () {
+          var lSP = SELECTED_PROJECT, lCB = CURRENT_BUILDINGS, lLOC = LOC_DATA, lDATA = DATA, lOPP = OPP_DATA, lBK = PROJECT_BOOKING_MAP;
+          try {
+            SELECTED_PROJECT = p; CURRENT_BUILDINGS = cb;
+            LOC_DATA = filterToBalqis(ALL_LOC || [], 'loc');
+            DATA = (ALL_VMS || []).filter(function (r) { return (isBalqisBuilding(r.building) || isBalqisUnit(r.unit)) && !isExcludedUnit(String(r.unit || '').toUpperCase()); }).filter(function (r) { return !(typeof dvIsOurCompany === 'function' && dvIsOurCompany(r.company)); });
+            OPP_DATA = filterToBalqis(omap, 'opp');
+            PROJECT_BOOKING_MAP = bmap;
+            hasUniverse = LOC_DATA.length > 0;
+            var res = classifyAt(today);
+            counts = {}; ['A+', 'A', 'B', 'C', 'D', 'E', 'F'].forEach(function (kk) { counts[kk] = (res.buckets[kk] || []).length; });
+          } finally {
+            SELECTED_PROJECT = lSP; CURRENT_BUILDINGS = lCB; LOC_DATA = lLOC; DATA = lDATA; OPP_DATA = lOPP; PROJECT_BOOKING_MAP = lBK;
+          }
+        })();
+        if (!counts || !hasUniverse) { skipped++; continue; }
+        (OPP_CENTRAL_SNAPS_ALL[p] = OPP_CENTRAL_SNAPS_ALL[p] || {})[wk] = { counts: counts, ts: new Date().toISOString() };
+        try { localStorage.setItem(SNAPSHOT_PREFIX + p + '|' + wk, JSON.stringify({ counts: counts, ts: new Date().toISOString() })); } catch (e) {}
+        filled++;
+      } catch (ep) { skipped++; console.warn('weekly snapshot skipped for', p, ep && ep.message); }
+    }
+    if (filled > 0) {
+      try { await ghPutBucketsJson(ghToken(), buildBucketsJsonStr(), 'Weekly all-project bucket snapshot ' + wk + ' (+' + filled + ' projects)'); }
+      catch (ec) { console.warn('all-project buckets commit failed', ec && ec.message); if (manual && typeof toast === 'function') toast('Commit failed: ' + (ec && ec.message), 'error'); return; }
+    }
+    try { localStorage.setItem(guardKey, '1'); } catch (e) {}
+    try { renderSegBuckets(); } catch (e) {}
+    if (typeof toast === 'function') toast('Weekly history recorded (+' + filled + ' project' + (filled === 1 ? '' : 's') + (skipped ? ', ' + skipped + ' already done' : '') + ').', 'ok');
+  } catch (e) { console.warn('recordAllProjectsWeekly failed', e && e.message); }
 }
 
 /* ============================================================
