@@ -805,8 +805,8 @@ let SEG_META = {};           // per-unit metadata for drill-through
 const WON_GATE = 'Gate 04.13 Closed As Won';
 const SEG_DEFS = [
   { k:'A+', icon:'🌟', color:'#2E8B57', label:'A+ Loyal',           sub:'1+ services from us, none from competitor' },
-  { k:'A',  icon:'⚔️', color:'#0EA5E9', label:'A Shared (Same)',    sub:'Both us + competitor, same service' },
   { k:'B',  icon:'🔀', color:'#8B5CF6', label:'B Shared (Diff)',    sub:'Both us + competitor, different service' },
+  { k:'A',  icon:'⚔️', color:'#0EA5E9', label:'A Shared (Same)',    sub:'Both us + competitor, same service' },
   { k:'C',  icon:'⏰', color:'#E8A33D', label:'C Aging (overlay)',  sub:'Last won > 3 months (also in A+/A/B)', overlay: true },
   { k:'D',  icon:'💬', color:'#0891B2', label:'D Engaged, Not Won', sub:'Opp exists, no closed-won yet' },
   { k:'E',  icon:'🎯', color:'#C0392B', label:'E Competitor Only',  sub:'Never engaged with us, competitor uses' },
@@ -1720,6 +1720,51 @@ function buildSegBuckets() {
   saveSnapshot(wk, counts);
 }
 
+/* Per-bucket "Aging > 3 months" counts — replaces the removed standalone C overlay card.
+   The rule differs by bucket:
+     A+ / A / B : latest closed-won was over 3 months ago      (SEG_META.isAging — same as old C)
+     D          : latest opportunity CREATED over 3 months ago (still not won)
+     E          : latest competitor visit was over 3 months ago
+     F          : always 0 (no activity from anyone) */
+const SEG_AGE_TIP = {
+  'A+': 'Won customers whose last won was over 3 months ago',
+  'A':  'Won customers whose last won was over 3 months ago',
+  'B':  'Won customers whose last won was over 3 months ago',
+  'D':  'Open opportunities created over 3 months ago (still not won)',
+  'E':  'Competitor-only units whose last competitor visit was over 3 months ago',
+  'F':  'No activity from anyone'
+};
+function segAgingCount(k) {
+  try {
+    if (k === 'F') return 0;
+    const cutD = new Date(fmtDate(new Date()) + 'T23:59:59');
+    const agingD = new Date(cutD); agingD.setDate(agingD.getDate() - 90);
+    const aging = fmtDate(agingD);
+    const units = (typeof SEG_BUCKETS !== 'undefined' && SEG_BUCKETS[k]) ? SEG_BUCKETS[k] : [];
+    if (k === 'A+' || k === 'A' || k === 'B') {
+      let n = 0; units.forEach(u => { if (SEG_META[u] && SEG_META[u].isAging) n++; }); return n;
+    }
+    if (k === 'D') {
+      const raw = (typeof OPP_RAW_BY_UNIT !== 'undefined') ? OPP_RAW_BY_UNIT : {};
+      let n = 0; units.forEach(u => {
+        const rows = raw[u] || []; let latest = '';
+        rows.forEach(r => { if (r.date && r.date > latest) latest = r.date; });
+        if (latest && latest < aging) n++;
+      }); return n;
+    }
+    if (k === 'E') {
+      const lastComp = {};
+      (typeof DATA !== 'undefined' ? DATA : []).forEach(r => {
+        if (!r.unit || !r.date || !r.company) return;
+        if (typeof dvIsOurCompany === 'function' && dvIsOurCompany(r.company)) return;
+        if (!lastComp[r.unit] || r.date > lastComp[r.unit]) lastComp[r.unit] = r.date;
+      });
+      let n = 0; units.forEach(u => { const d = lastComp[u]; if (d && d < aging) n++; }); return n;
+    }
+    return 0;
+  } catch (e) { return 0; }
+}
+
 function renderSegBuckets() {
   const grid = document.getElementById('bucketGrid2');
   if (!grid) return;
@@ -1770,7 +1815,7 @@ function renderSegBuckets() {
   };
   const valHtml = v => v == null ? '<span class="bk-wk-val dash">—</span>' : `<span class="bk-wk-val">${v.toLocaleString()}</span>`;
 
-  grid.innerHTML = SEG_DEFS.map(def => {
+  grid.innerHTML = SEG_DEFS.filter(def => def.k !== 'C').map(def => {
     const cCur   = snapCur[def.k];
     const cPrev  = snapPrev  ? snapPrev[def.k]  : null;
     const cPrev2 = snapPrev2 ? snapPrev2[def.k] : null;
@@ -1806,6 +1851,13 @@ function renderSegBuckets() {
         <div class="bk-row-line">
           <span class="bk-wk-meta">${wkCur} · today</span>
           <span><span class="bk-wk-val" style="color:${def.color};">${cCur.toLocaleString()}</span>${arrowFor(cCur, cPrev)}</span>
+        </div>
+      </div>
+
+      <div class="bk-row bk-row-aging" style="background:#FEF9C3; margin:8px -14px -12px; padding:8px 14px; border-top:1px solid #FDE68A; border-radius:0 0 10px 10px;">
+        <div class="bk-row-line" title="${SEG_AGE_TIP[def.k] || ''}">
+          <span class="bk-wk-lbl" style="color:#92722A;">⏰ Aging &gt; 3 mo</span>
+          <span class="bk-wk-val" style="color:#92722A;">${segAgingCount(def.k).toLocaleString()}</span>
         </div>
       </div>
     </div>`;
@@ -3605,7 +3657,7 @@ window.addEventListener('dv-tables-updated', function () { try { DV_OCC_STAMP = 
 function renderUnitMatrix() {
   var tbl = document.getElementById('unitMatrixTable');
   if (!tbl || typeof SEG_META === 'undefined') return;
-  var COLS = ['A+','A','B','D','E','F'];
+  var COLS = ['A+','B','A','D','E','F'];
   var colDef = {}; if (typeof SEG_DEFS !== 'undefined') SEG_DEFS.forEach(function (d) { colDef[d.k] = d; });
   var units = Object.keys(SEG_META).sort(function (a, b) {
     return (SEG_META[a].building || '').localeCompare(SEG_META[b].building || '') || a.localeCompare(b);
