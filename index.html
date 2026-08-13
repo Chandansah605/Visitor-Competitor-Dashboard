@@ -252,7 +252,7 @@
   /* 7-bucket row */
   .bucket-row {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 10px;
   }
   @media (max-width: 1280px) { .bucket-row { grid-template-columns: repeat(4, 1fr); } }
@@ -805,8 +805,8 @@ let SEG_META = {};           // per-unit metadata for drill-through
 const WON_GATE = 'Gate 04.13 Closed As Won';
 const SEG_DEFS = [
   { k:'A+', icon:'🌟', color:'#2E8B57', label:'A+ Loyal',           sub:'1+ services from us, none from competitor' },
-  { k:'B',  icon:'🔀', color:'#8B5CF6', label:'B Shared (Diff)',    sub:'Both us + competitor, different service' },
-  { k:'A',  icon:'⚔️', color:'#0EA5E9', label:'A Shared (Same)',    sub:'Both us + competitor, same service' },
+  { k:'B',  icon:'🔀', color:'#8B5CF6', label:'A Shared (Diff)',    sub:'Both us + competitor, different service', disp:'A' },
+  { k:'A',  icon:'⚔️', color:'#0EA5E9', label:'B Shared (Same)',    sub:'Both us + competitor, same service', disp:'B' },
   { k:'C',  icon:'⏰', color:'#E8A33D', label:'C Aging (overlay)',  sub:'Last won > 3 months (also in A+/A/B)', overlay: true },
   { k:'D',  icon:'💬', color:'#0891B2', label:'D Engaged, Not Won', sub:'Opp exists, no closed-won yet' },
   { k:'E',  icon:'🎯', color:'#C0392B', label:'E Competitor Only',  sub:'Never engaged with us, competitor uses' },
@@ -1734,35 +1734,86 @@ const SEG_AGE_TIP = {
   'E':  'Competitor-only units whose last competitor visit was over 3 months ago',
   'F':  'No activity from anyone'
 };
-function segAgingCount(k) {
+/* Returns the detailed list of "aging > 3 months" units for a bucket (drives both the
+   card count and the drill-through). Each row: {u, building, date, company, services}.
+   date = OUR last service date for A+/A/B/D; last competitor visit for E. */
+function agingUnitsFor(key) {
+  const out = [];
   try {
-    if (k === 'F') return 0;
+    if (key === 'F') return out;
     const cutD = new Date(fmtDate(new Date()) + 'T23:59:59');
     const agingD = new Date(cutD); agingD.setDate(agingD.getDate() - 90);
     const aging = fmtDate(agingD);
-    const units = (typeof SEG_BUCKETS !== 'undefined' && SEG_BUCKETS[k]) ? SEG_BUCKETS[k] : [];
-    if (k === 'A+' || k === 'A' || k === 'B') {
-      let n = 0; units.forEach(u => { if (SEG_META[u] && SEG_META[u].isAging) n++; }); return n;
-    }
-    if (k === 'D') {
+    const units = (typeof SEG_BUCKETS !== 'undefined' && SEG_BUCKETS[key]) ? SEG_BUCKETS[key] : [];
+    if (key === 'A+' || key === 'A' || key === 'B') {
+      // our win-based aging: last won > 3 months ago
+      units.forEach(u => {
+        const m = SEG_META[u];
+        if (m && m.isAging) out.push({ u, building: m.building || '', date: m.latestWon || '', company: 'S&C', services: m.scServices || m.wonDepts || '' });
+      });
+    } else if (key === 'D') {
+      // engaged, not won: latest opportunity created > 3 months ago (no service delivered yet)
       const raw = (typeof OPP_RAW_BY_UNIT !== 'undefined') ? OPP_RAW_BY_UNIT : {};
-      let n = 0; units.forEach(u => {
+      units.forEach(u => {
         const rows = raw[u] || []; let latest = '';
         rows.forEach(r => { if (r.date && r.date > latest) latest = r.date; });
-        if (latest && latest < aging) n++;
-      }); return n;
-    }
-    if (k === 'E') {
-      const lastComp = {};
+        if (latest && latest < aging) {
+          const m = SEG_META[u] || {};
+          out.push({ u, building: m.building || '', date: '', company: 'S&C', services: m.notWonDepts || m.scServices || '', oppDate: latest });
+        }
+      });
+    } else if (key === 'E') {
+      // competitor only: last competitor visit > 3 months ago
+      const last = {};
       (typeof DATA !== 'undefined' ? DATA : []).forEach(r => {
         if (!r.unit || !r.date || !r.company) return;
         if (typeof dvIsOurCompany === 'function' && dvIsOurCompany(r.company)) return;
-        if (!lastComp[r.unit] || r.date > lastComp[r.unit]) lastComp[r.unit] = r.date;
+        if (!last[r.unit] || r.date > last[r.unit].date) last[r.unit] = { date: r.date, company: r.company, purpose: r.purpose };
       });
-      let n = 0; units.forEach(u => { const d = lastComp[u]; if (d && d < aging) n++; }); return n;
+      units.forEach(u => {
+        const L = last[u];
+        if (L && L.date < aging) {
+          const m = SEG_META[u] || {};
+          out.push({ u, building: m.building || '', date: L.date, company: L.company || '', services: (typeof canonLabel === 'function' ? canonLabel(canonService(L.purpose)) : (L.purpose || '')) });
+        }
+      });
     }
-    return 0;
-  } catch (e) { return 0; }
+    out.sort((a, b) => (a.building || '').localeCompare(b.building || '') || (a.u || '').localeCompare(b.u || ''));
+  } catch (e) {}
+  return out;
+}
+function segAgingCount(k) { try { return agingUnitsFor(k).length; } catch (e) { return 0; } }
+
+// Drill-through for a card's aging row — lists ONLY the aging units with last service/visit detail.
+function showAgingDrill(key) {
+  const def = SEG_DEFS.find(d => d.k === key) || { k: key, label: key };
+  const rows = agingUnitsFor(key);
+  const isE = (key === 'E');
+  const dateHdr = isE ? 'Last Competitor Visit' : 'Last Service Date';
+  const compHdr = isE ? 'Competitor' : 'Company';
+  const tableHtml = `
+    <div style="display:flex; gap:10px; align-items:center; margin:8px 0;">
+      <input id="ageSearch" placeholder="Filter unit / building..." oninput="filterAgeTable(this.value)" style="flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:6px; font-size:13px;"/>
+    </div>
+    <div class="table-scroll" style="max-height:520px;">
+    <table id="ageDrillTable"><thead><tr>
+      <th>Building</th><th>Unit</th><th>${dateHdr}</th><th>${compHdr}</th><th>Service(s)</th>
+    </tr></thead><tbody>
+    ${rows.map(r => `<tr>
+      <td>${escHtml(r.building)}</td>
+      <td>${escHtml(r.u)}</td>
+      <td>${escHtml(r.date || '—')}</td>
+      <td>${escHtml(r.company || '—')}</td>
+      <td>${escHtml(r.services || '—')}</td>
+    </tr>`).join('')}
+    </tbody></table></div>
+    <p style="color:var(--muted); font-size:12px; margin-top:8px;">${rows.length} aging unit(s) — older than 3 months. ${isE ? 'Date = last competitor visit.' : 'Date = our last service.'}</p>
+  `;
+  openModal(`⏰ Aging > 3 mo — ${escHtml(def.label)}`, tableHtml);
+}
+function filterAgeTable(q) {
+  q = (q || '').toLowerCase();
+  document.querySelectorAll('#ageDrillTable tbody tr').forEach(tr => { tr.style.display = tr.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none'; });
 }
 
 function renderSegBuckets() {
@@ -1854,9 +1905,9 @@ function renderSegBuckets() {
         </div>
       </div>
 
-      <div class="bk-row bk-row-aging" style="background:#FEF9C3; margin:8px -14px -12px; padding:8px 14px; border-top:1px solid #FDE68A; border-radius:0 0 10px 10px;">
-        <div class="bk-row-line" title="${SEG_AGE_TIP[def.k] || ''}">
-          <span class="bk-wk-lbl" style="color:#92722A;">⏰ Aging &gt; 3 mo</span>
+      <div class="bk-row bk-row-aging" style="background:#FEF9C3; margin:8px -14px -12px; padding:8px 14px; border-top:1px solid #FDE68A; border-radius:0 0 10px 10px; cursor:pointer;" onclick="event.stopPropagation(); showAgingDrill('${def.k}')" title="${SEG_AGE_TIP[def.k] || ''} — click to view units">
+        <div class="bk-row-line">
+          <span class="bk-wk-lbl" style="color:#92722A;">⏰ Aging &gt; 3 mo ›</span>
           <span class="bk-wk-val" style="color:#92722A;">${segAgingCount(def.k).toLocaleString()}</span>
         </div>
       </div>
@@ -3659,6 +3710,7 @@ function renderUnitMatrix() {
   if (!tbl || typeof SEG_META === 'undefined') return;
   var COLS = ['A+','B','A','D','E','F'];
   var colDef = {}; if (typeof SEG_DEFS !== 'undefined') SEG_DEFS.forEach(function (d) { colDef[d.k] = d; });
+  var DK = function (x) { return (colDef[x] && colDef[x].disp) || x; };  // display letter (Diff=A, Same=B) while data stays keyed
   var units = Object.keys(SEG_META).sort(function (a, b) {
     return (SEG_META[a].building || '').localeCompare(SEG_META[b].building || '') || a.localeCompare(b);
   });
@@ -3670,7 +3722,7 @@ function renderUnitMatrix() {
   var WKBASE = (typeof getWeekBaseline === 'function') ? getWeekBaseline() : (OPP_BASELINE_UNITS || {});
   var head = '<thead><tr><th class="um-unit">Building / Unit</th>' +
     '<th class="um-occ">Occupied By</th><th class="um-names">Resident Name(s)</th>' +
-    COLS.map(function (k) { var d = colDef[k] || {}; return '<th class="um-bk" style="color:' + (d.color || '#555') + ';border-bottom:2px solid ' + (d.color || '#ccc') + '">' + k + '</th>'; }).join('') +
+    COLS.map(function (k) { var d = colDef[k] || {}; return '<th class="um-bk" style="color:' + (d.color || '#555') + ';border-bottom:2px solid ' + (d.color || '#ccc') + '">' + DK(k) + '</th>'; }).join('') +
     '<th class="um-change">Movement</th></tr></thead>';
   var body = '';
   units.forEach(function (u) {
@@ -3683,12 +3735,12 @@ function renderUnitMatrix() {
     shown++;
     var cells = COLS.map(function (k) {
       var d = colDef[k] || {};
-      if (k === cur) return '<td class="um-bk"><span class="um-chip" style="background:' + (d.color || '#555') + '">' + k + '</span></td>';
-      if (isMoved && k === base) return '<td class="um-bk"><span class="um-chip um-from" style="color:' + (d.color || '#999') + ';border-color:' + (d.color || '#999') + '">' + k + '</span></td>';
+      if (k === cur) return '<td class="um-bk"><span class="um-chip" style="background:' + (d.color || '#555') + '">' + DK(k) + '</span></td>';
+      if (isMoved && k === base) return '<td class="um-bk"><span class="um-chip um-from" style="color:' + (d.color || '#999') + ';border-color:' + (d.color || '#999') + '">' + DK(k) + '</span></td>';
       return '<td class="um-bk"><span class="um-empty"></span></td>';
     }).join('');
     var change = isMoved
-      ? '<span class="um-move"><b style="color:' + ((colDef[base] || {}).color || '#777') + '">' + base + '</b><span class="um-arrow">&rarr;</span><b style="color:' + ((colDef[cur] || {}).color || '#333') + '">' + cur + '</b></span>'
+      ? '<span class="um-move"><b style="color:' + ((colDef[base] || {}).color || '#777') + '">' + DK(base) + '</b><span class="um-arrow">&rarr;</span><b style="color:' + ((colDef[cur] || {}).color || '#333') + '">' + DK(cur) + '</b></span>'
       : '<span class="um-nochange">&mdash;</span>';
     var occ = (typeof dvOccupancyForUnit === 'function') ? dvOccupancyForUnit(u) : { occupiedBy: '', names: '' };
     var occCls = occ.occupiedBy === 'Tenant' ? 'occ-tenant' : (occ.occupiedBy === 'Holiday Home' ? 'occ-holiday' : (occ.occupiedBy === 'Owner' ? 'occ-owner' : ''));
