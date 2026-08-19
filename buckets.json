@@ -4,14 +4,14 @@
       "2026-W34": {
         "counts": {
           "A+": 4,
-          "A": 163,
-          "B": 30,
-          "C": 175,
-          "D": 25,
-          "E": 56,
+          "A": 189,
+          "B": 32,
+          "C": 106,
+          "D": 9,
+          "E": 44,
           "F": 2
         },
-        "ts": "2026-08-19T05:01:38.551Z"
+        "ts": "2026-08-19T07:52:05.857Z"
       },
       "2026-W32": {
         "counts": {
@@ -74,6 +74,18 @@
           "F": 348
         },
         "ts": "2026-08-10T07:23:52.263Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 76,
+          "A": 0,
+          "B": 0,
+          "C": 53,
+          "D": 12,
+          "E": 0,
+          "F": 348
+        },
+        "ts": "2026-08-19T07:52:17.328Z"
       }
     },
     "SPARKLE TOWERS": {
@@ -100,6 +112,18 @@
           "F": 372
         },
         "ts": "2026-08-06T11:54:52.928Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 1,
+          "A": 0,
+          "B": 0,
+          "C": 1,
+          "D": 0,
+          "E": 0,
+          "F": 372
+        },
+        "ts": "2026-08-19T07:52:30.602Z"
       }
     },
     "GOLDEN MILE": {
@@ -126,6 +150,18 @@
           "F": 650
         },
         "ts": "2026-08-10T07:23:53.974Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 172,
+          "A": 0,
+          "B": 0,
+          "C": 67,
+          "D": 13,
+          "E": 0,
+          "F": 642
+        },
+        "ts": "2026-08-19T07:52:22.573Z"
       }
     },
     "BARTON HOUSE 1": {
@@ -152,6 +188,18 @@
           "F": 21
         },
         "ts": "2026-08-10T07:23:50.906Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 85,
+          "A": 0,
+          "B": 0,
+          "C": 53,
+          "D": 6,
+          "E": 0,
+          "F": 21
+        },
+        "ts": "2026-08-19T07:52:15.880Z"
       }
     },
     "FORTUNATO": {
@@ -178,6 +226,18 @@
           "F": 282
         },
         "ts": "2026-08-10T07:23:53.250Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 0,
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 0,
+          "E": 0,
+          "F": 282
+        },
+        "ts": "2026-08-19T07:52:21.168Z"
       }
     },
     "EDEN APARTMENTS": {
@@ -204,6 +264,18 @@
           "F": 32
         },
         "ts": "2026-08-10T07:23:52.991Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 102,
+          "A": 0,
+          "B": 0,
+          "C": 62,
+          "D": 3,
+          "E": 0,
+          "F": 32
+        },
+        "ts": "2026-08-19T07:52:17.911Z"
       }
     },
     "BELGRAVIA SQUARE JVC": {
@@ -230,6 +302,18 @@
           "F": 224
         },
         "ts": "2026-08-06T11:54:40.642Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 1,
+          "A": 0,
+          "B": 0,
+          "C": 1,
+          "D": 0,
+          "E": 0,
+          "F": 224
+        },
+        "ts": "2026-08-19T07:52:16.412Z"
       }
     },
     "SOUTH RESIDENCE": {
@@ -264,10 +348,10 @@
           "B": 0,
           "C": 0,
           "D": 0,
-          "E": 0,
-          "F": 109
+          "E": 205,
+          "F": 76
         },
-        "ts": "2026-08-19T05:02:22.725Z"
+        "ts": "2026-08-19T05:02:28.918Z"
       }
     },
     "MAG 318": {
@@ -294,6 +378,18 @@
           "F": 19
         },
         "ts": "2026-08-10T07:23:58.461Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 208,
+          "A": 129,
+          "B": 58,
+          "C": 185,
+          "D": 10,
+          "E": 18,
+          "F": 16
+        },
+        "ts": "2026-08-19T07:52:28.917Z"
       }
     },
     "MONREVE TOWER": {
@@ -320,6 +416,18 @@
           "F": 91
         },
         "ts": "2026-08-06T11:54:49.438Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 6,
+          "A": 0,
+          "B": 0,
+          "C": 4,
+          "D": 1,
+          "E": 0,
+          "F": 91
+        },
+        "ts": "2026-08-19T07:52:29.182Z"
       }
     },
     "THE8": {
@@ -346,6 +454,18 @@
           "F": 33
         },
         "ts": "2026-08-10T07:24:11.232Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 21,
+          "A": 45,
+          "B": 17,
+          "C": 35,
+          "D": 13,
+          "E": 69,
+          "F": 30
+        },
+        "ts": "2026-08-19T07:52:31.965Z"
       }
     },
     "THE AUTOGRAPH": {
@@ -372,6 +492,18 @@
           "F": 272
         },
         "ts": "2026-08-10T07:24:10.275Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 11,
+          "A": 0,
+          "B": 0,
+          "C": 2,
+          "D": 0,
+          "E": 0,
+          "F": 272
+        },
+        "ts": "2026-08-19T07:52:31.081Z"
       }
     },
     "IRIS BLUE": {
@@ -398,6 +530,18 @@
           "F": 150
         },
         "ts": "2026-08-10T07:23:54.223Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 5,
+          "A": 0,
+          "B": 0,
+          "C": 4,
+          "D": 0,
+          "E": 0,
+          "F": 150
+        },
+        "ts": "2026-08-19T07:52:23.170Z"
       }
     },
     "J ONE TOWER": {
@@ -424,6 +568,18 @@
           "F": 125
         },
         "ts": "2026-08-10T07:23:54.522Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 6,
+          "A": 0,
+          "B": 0,
+          "C": 2,
+          "D": 0,
+          "E": 0,
+          "F": 125
+        },
+        "ts": "2026-08-19T07:52:24.490Z"
       }
     },
     "WILTON PARK RESIDENCES": {
@@ -450,6 +606,18 @@
           "F": 317
         },
         "ts": "2026-08-06T11:54:54.732Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 1,
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 2,
+          "E": 0,
+          "F": 316
+        },
+        "ts": "2026-08-19T07:52:32.571Z"
       }
     },
     "RESIDENCE 110": {
@@ -514,6 +682,18 @@
           "F": 84
         },
         "ts": "2026-08-10T07:23:51.648Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 0,
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 0,
+          "E": 0,
+          "F": 84
+        },
+        "ts": "2026-08-19T07:52:16.666Z"
       }
     },
     "SEVEN PALM HOTEL & APTS": {
@@ -540,6 +720,18 @@
           "F": 582
         },
         "ts": "2026-08-10T07:24:05.024Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 0,
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 0,
+          "E": 0,
+          "F": 582
+        },
+        "ts": "2026-08-19T07:52:29.397Z"
       }
     },
     "SHORELINE 7AND8": {
@@ -566,6 +758,18 @@
           "F": 21
         },
         "ts": "2026-08-10T07:24:05.913Z"
+      },
+      "2026-W34": {
+        "counts": {
+          "A+": 15,
+          "A": 51,
+          "B": 27,
+          "C": 51,
+          "D": 29,
+          "E": 109,
+          "F": 19
+        },
+        "ts": "2026-08-19T07:52:30.198Z"
       }
     },
     "NORTH RESIDENCE": {
@@ -1580,115 +1784,286 @@
     }
   },
   "_units": {
-    "RESIDENCE 110_APARTMENT-1001": "F",
-    "RESIDENCE 110_APARTMENT-1002": "F",
-    "RESIDENCE 110_APARTMENT-1003": "F",
-    "RESIDENCE 110_APARTMENT-1004": "F",
-    "RESIDENCE 110_APARTMENT-1005": "F",
-    "RESIDENCE 110_APARTMENT-1006": "F",
-    "RESIDENCE 110_APARTMENT-101": "F",
-    "RESIDENCE 110_APARTMENT-102": "F",
-    "RESIDENCE 110_APARTMENT-103": "F",
-    "RESIDENCE 110_APARTMENT-104": "F",
-    "RESIDENCE 110_APARTMENT-105": "F",
-    "RESIDENCE 110_APARTMENT-1101": "F",
-    "RESIDENCE 110_APARTMENT-1102": "F",
-    "RESIDENCE 110_APARTMENT-1103": "F",
-    "RESIDENCE 110_APARTMENT-1104": "F",
-    "RESIDENCE 110_APARTMENT-1105": "F",
-    "RESIDENCE 110_APARTMENT-1106": "F",
-    "RESIDENCE 110_APARTMENT-1201": "F",
-    "RESIDENCE 110_APARTMENT-1202": "F",
-    "RESIDENCE 110_APARTMENT-1203": "F",
-    "RESIDENCE 110_APARTMENT-1204": "F",
-    "RESIDENCE 110_APARTMENT-1205": "F",
-    "RESIDENCE 110_APARTMENT-1206": "F",
-    "RESIDENCE 110_APARTMENT-1301": "F",
-    "RESIDENCE 110_APARTMENT-1302": "F",
-    "RESIDENCE 110_APARTMENT-1303": "F",
-    "RESIDENCE 110_APARTMENT-1304": "F",
-    "RESIDENCE 110_APARTMENT-1305": "F",
-    "RESIDENCE 110_APARTMENT-1306": "F",
-    "RESIDENCE 110_APARTMENT-1401": "F",
-    "RESIDENCE 110_APARTMENT-1402": "F",
-    "RESIDENCE 110_APARTMENT-1403": "F",
-    "RESIDENCE 110_APARTMENT-1404": "F",
-    "RESIDENCE 110_APARTMENT-1405": "F",
-    "RESIDENCE 110_APARTMENT-1406": "F",
-    "RESIDENCE 110_APARTMENT-1501": "F",
-    "RESIDENCE 110_APARTMENT-1502": "F",
-    "RESIDENCE 110_APARTMENT-1503": "F",
-    "RESIDENCE 110_APARTMENT-1504": "F",
-    "RESIDENCE 110_APARTMENT-1505": "F",
-    "RESIDENCE 110_APARTMENT-1506": "F",
-    "RESIDENCE 110_APARTMENT-1601": "F",
-    "RESIDENCE 110_APARTMENT-1602": "F",
-    "RESIDENCE 110_APARTMENT-1603": "F",
-    "RESIDENCE 110_APARTMENT-1604": "F",
-    "RESIDENCE 110_APARTMENT-1605": "F",
-    "RESIDENCE 110_APARTMENT-1606": "F",
-    "RESIDENCE 110_APARTMENT-1701": "F",
-    "RESIDENCE 110_APARTMENT-1702": "F",
-    "RESIDENCE 110_APARTMENT-1703": "F",
-    "RESIDENCE 110_APARTMENT-1704": "F",
-    "RESIDENCE 110_APARTMENT-1705": "F",
-    "RESIDENCE 110_APARTMENT-1706": "F",
-    "RESIDENCE 110_APARTMENT-1801": "F",
-    "RESIDENCE 110_APARTMENT-1802": "F",
-    "RESIDENCE 110_APARTMENT-1803": "F",
-    "RESIDENCE 110_APARTMENT-1804": "F",
-    "RESIDENCE 110_APARTMENT-1805": "F",
-    "RESIDENCE 110_APARTMENT-1806": "F",
-    "RESIDENCE 110_APARTMENT-1901": "F",
-    "RESIDENCE 110_APARTMENT-1902": "F",
-    "RESIDENCE 110_APARTMENT-1903": "F",
-    "RESIDENCE 110_APARTMENT-1904": "F",
-    "RESIDENCE 110_APARTMENT-1905": "F",
-    "RESIDENCE 110_APARTMENT-201": "F",
-    "RESIDENCE 110_APARTMENT-202": "F",
-    "RESIDENCE 110_APARTMENT-203": "F",
-    "RESIDENCE 110_APARTMENT-204": "F",
-    "RESIDENCE 110_APARTMENT-301": "F",
-    "RESIDENCE 110_APARTMENT-302": "F",
-    "RESIDENCE 110_APARTMENT-303": "F",
-    "RESIDENCE 110_APARTMENT-304": "F",
-    "RESIDENCE 110_APARTMENT-305": "F",
-    "RESIDENCE 110_APARTMENT-401": "F",
-    "RESIDENCE 110_APARTMENT-402": "F",
-    "RESIDENCE 110_APARTMENT-403": "F",
-    "RESIDENCE 110_APARTMENT-404": "F",
-    "RESIDENCE 110_APARTMENT-405": "F",
-    "RESIDENCE 110_APARTMENT-406": "F",
-    "RESIDENCE 110_APARTMENT-501": "F",
-    "RESIDENCE 110_APARTMENT-502": "F",
-    "RESIDENCE 110_APARTMENT-503": "F",
-    "RESIDENCE 110_APARTMENT-504": "F",
-    "RESIDENCE 110_APARTMENT-505": "F",
-    "RESIDENCE 110_APARTMENT-506": "F",
-    "RESIDENCE 110_APARTMENT-601": "F",
-    "RESIDENCE 110_APARTMENT-602": "F",
-    "RESIDENCE 110_APARTMENT-603": "F",
-    "RESIDENCE 110_APARTMENT-604": "F",
-    "RESIDENCE 110_APARTMENT-605": "F",
-    "RESIDENCE 110_APARTMENT-606": "F",
-    "RESIDENCE 110_APARTMENT-701": "F",
-    "RESIDENCE 110_APARTMENT-702": "F",
-    "RESIDENCE 110_APARTMENT-703": "F",
-    "RESIDENCE 110_APARTMENT-704": "F",
-    "RESIDENCE 110_APARTMENT-705": "F",
-    "RESIDENCE 110_APARTMENT-706": "F",
-    "RESIDENCE 110_APARTMENT-801": "F",
-    "RESIDENCE 110_APARTMENT-802": "F",
-    "RESIDENCE 110_APARTMENT-803": "F",
-    "RESIDENCE 110_APARTMENT-804": "F",
-    "RESIDENCE 110_APARTMENT-805": "F",
-    "RESIDENCE 110_APARTMENT-806": "F",
-    "RESIDENCE 110_APARTMENT-901": "F",
-    "RESIDENCE 110_APARTMENT-902": "F",
-    "RESIDENCE 110_APARTMENT-903": "F",
-    "RESIDENCE 110_APARTMENT-904": "F",
-    "RESIDENCE 110_APARTMENT-905": "F",
-    "RESIDENCE 110_APARTMENT-906": "F"
+    "BALQIS BLOCK A_APARTMENT-1001": "E",
+    "BALQIS BLOCK A_APARTMENT-1002": "A",
+    "BALQIS BLOCK A_APARTMENT-1003": "E",
+    "BALQIS BLOCK A_APARTMENT-1004": "A",
+    "BALQIS BLOCK A_APARTMENT-101": "A",
+    "BALQIS BLOCK A_APARTMENT-102": "B",
+    "BALQIS BLOCK A_APARTMENT-1101": "D",
+    "BALQIS BLOCK A_APARTMENT-201": "B",
+    "BALQIS BLOCK A_APARTMENT-202": "D",
+    "BALQIS BLOCK A_APARTMENT-203": "A",
+    "BALQIS BLOCK A_APARTMENT-204": "E",
+    "BALQIS BLOCK A_APARTMENT-205": "A",
+    "BALQIS BLOCK A_APARTMENT-206": "D",
+    "BALQIS BLOCK A_APARTMENT-207": "A",
+    "BALQIS BLOCK A_APARTMENT-208": "B",
+    "BALQIS BLOCK A_APARTMENT-301": "A",
+    "BALQIS BLOCK A_APARTMENT-302": "A",
+    "BALQIS BLOCK A_APARTMENT-303": "A",
+    "BALQIS BLOCK A_APARTMENT-304": "A",
+    "BALQIS BLOCK A_APARTMENT-305": "A",
+    "BALQIS BLOCK A_APARTMENT-306": "E",
+    "BALQIS BLOCK A_APARTMENT-307": "D",
+    "BALQIS BLOCK A_APARTMENT-308": "B",
+    "BALQIS BLOCK A_APARTMENT-401": "A",
+    "BALQIS BLOCK A_APARTMENT-402": "A",
+    "BALQIS BLOCK A_APARTMENT-403": "A+",
+    "BALQIS BLOCK A_APARTMENT-404": "A+",
+    "BALQIS BLOCK A_APARTMENT-405": "E",
+    "BALQIS BLOCK A_APARTMENT-406": "A",
+    "BALQIS BLOCK A_APARTMENT-501": "A",
+    "BALQIS BLOCK A_APARTMENT-502": "A",
+    "BALQIS BLOCK A_APARTMENT-503": "A",
+    "BALQIS BLOCK A_APARTMENT-504": "A",
+    "BALQIS BLOCK A_APARTMENT-505": "A",
+    "BALQIS BLOCK A_APARTMENT-506": "D",
+    "BALQIS BLOCK A_APARTMENT-601": "A",
+    "BALQIS BLOCK A_APARTMENT-602": "A",
+    "BALQIS BLOCK A_APARTMENT-603": "A",
+    "BALQIS BLOCK A_APARTMENT-604": "E",
+    "BALQIS BLOCK A_APARTMENT-605": "D",
+    "BALQIS BLOCK A_APARTMENT-606": "A",
+    "BALQIS BLOCK A_APARTMENT-701": "E",
+    "BALQIS BLOCK A_APARTMENT-702": "E",
+    "BALQIS BLOCK A_APARTMENT-703": "A",
+    "BALQIS BLOCK A_APARTMENT-704": "A",
+    "BALQIS BLOCK A_APARTMENT-801": "B",
+    "BALQIS BLOCK A_APARTMENT-802": "D",
+    "BALQIS BLOCK A_APARTMENT-803": "A",
+    "BALQIS BLOCK A_APARTMENT-804": "A",
+    "BALQIS BLOCK A_APARTMENT-805": "A",
+    "BALQIS BLOCK A_APARTMENT-901": "E",
+    "BALQIS BLOCK A_APARTMENT-902": "B",
+    "BALQIS BLOCK A_APARTMENT-903": "A",
+    "BALQIS BLOCK A_APARTMENT-904": "A",
+    "BALQIS BLOCK B_APARTMENT-1001": "A",
+    "BALQIS BLOCK B_APARTMENT-1002": "A",
+    "BALQIS BLOCK B_APARTMENT-1003": "A",
+    "BALQIS BLOCK B_APARTMENT-1004": "A",
+    "BALQIS BLOCK B_APARTMENT-1005": "A",
+    "BALQIS BLOCK B_APARTMENT-1006": "A",
+    "BALQIS BLOCK B_APARTMENT-1007": "A",
+    "BALQIS BLOCK B_APARTMENT-1008": "A",
+    "BALQIS BLOCK B_APARTMENT-1009": "E",
+    "BALQIS BLOCK B_APARTMENT-101": "B",
+    "BALQIS BLOCK B_APARTMENT-1010": "A",
+    "BALQIS BLOCK B_APARTMENT-1011": "A",
+    "BALQIS BLOCK B_APARTMENT-1012": "A",
+    "BALQIS BLOCK B_APARTMENT-1013": "A",
+    "BALQIS BLOCK B_APARTMENT-1014": "B",
+    "BALQIS BLOCK B_APARTMENT-102": "E",
+    "BALQIS BLOCK B_APARTMENT-103": "E",
+    "BALQIS BLOCK B_APARTMENT-104": "E",
+    "BALQIS BLOCK B_APARTMENT-105": "A",
+    "BALQIS BLOCK B_APARTMENT-106": "A",
+    "BALQIS BLOCK B_APARTMENT-1101": "E",
+    "BALQIS BLOCK B_APARTMENT-1102": "A",
+    "BALQIS BLOCK B_APARTMENT-1103": "E",
+    "BALQIS BLOCK B_APARTMENT-1104": "B",
+    "BALQIS BLOCK B_APARTMENT-1105": "A",
+    "BALQIS BLOCK B_APARTMENT-1106": "A",
+    "BALQIS BLOCK B_APARTMENT-201": "A+",
+    "BALQIS BLOCK B_APARTMENT-202": "A",
+    "BALQIS BLOCK B_APARTMENT-203": "A",
+    "BALQIS BLOCK B_APARTMENT-204": "A",
+    "BALQIS BLOCK B_APARTMENT-205": "A",
+    "BALQIS BLOCK B_APARTMENT-206": "A",
+    "BALQIS BLOCK B_APARTMENT-207": "A",
+    "BALQIS BLOCK B_APARTMENT-208": "A",
+    "BALQIS BLOCK B_APARTMENT-209": "E",
+    "BALQIS BLOCK B_APARTMENT-210": "E",
+    "BALQIS BLOCK B_APARTMENT-211": "A",
+    "BALQIS BLOCK B_APARTMENT-212": "A",
+    "BALQIS BLOCK B_APARTMENT-213": "B",
+    "BALQIS BLOCK B_APARTMENT-214": "A",
+    "BALQIS BLOCK B_APARTMENT-215": "A",
+    "BALQIS BLOCK B_APARTMENT-216": "A",
+    "BALQIS BLOCK B_APARTMENT-301": "A",
+    "BALQIS BLOCK B_APARTMENT-302": "B",
+    "BALQIS BLOCK B_APARTMENT-303": "E",
+    "BALQIS BLOCK B_APARTMENT-304": "E",
+    "BALQIS BLOCK B_APARTMENT-305": "A",
+    "BALQIS BLOCK B_APARTMENT-306": "A",
+    "BALQIS BLOCK B_APARTMENT-307": "E",
+    "BALQIS BLOCK B_APARTMENT-308": "A",
+    "BALQIS BLOCK B_APARTMENT-309": "A",
+    "BALQIS BLOCK B_APARTMENT-310": "A",
+    "BALQIS BLOCK B_APARTMENT-311": "A",
+    "BALQIS BLOCK B_APARTMENT-312": "D",
+    "BALQIS BLOCK B_APARTMENT-313": "A",
+    "BALQIS BLOCK B_APARTMENT-314": "E",
+    "BALQIS BLOCK B_APARTMENT-401": "E",
+    "BALQIS BLOCK B_APARTMENT-402": "A",
+    "BALQIS BLOCK B_APARTMENT-403": "A",
+    "BALQIS BLOCK B_APARTMENT-404": "A",
+    "BALQIS BLOCK B_APARTMENT-405": "E",
+    "BALQIS BLOCK B_APARTMENT-406": "A",
+    "BALQIS BLOCK B_APARTMENT-407": "A",
+    "BALQIS BLOCK B_APARTMENT-408": "D",
+    "BALQIS BLOCK B_APARTMENT-409": "A",
+    "BALQIS BLOCK B_APARTMENT-410": "E",
+    "BALQIS BLOCK B_APARTMENT-411": "A",
+    "BALQIS BLOCK B_APARTMENT-412": "A",
+    "BALQIS BLOCK B_APARTMENT-413": "E",
+    "BALQIS BLOCK B_APARTMENT-414": "A",
+    "BALQIS BLOCK B_APARTMENT-415": "E",
+    "BALQIS BLOCK B_APARTMENT-416": "E",
+    "BALQIS BLOCK B_APARTMENT-501": "E",
+    "BALQIS BLOCK B_APARTMENT-502": "D",
+    "BALQIS BLOCK B_APARTMENT-503": "E",
+    "BALQIS BLOCK B_APARTMENT-504": "A",
+    "BALQIS BLOCK B_APARTMENT-505": "F",
+    "BALQIS BLOCK B_APARTMENT-506": "A",
+    "BALQIS BLOCK B_APARTMENT-507": "A",
+    "BALQIS BLOCK B_APARTMENT-508": "A",
+    "BALQIS BLOCK B_APARTMENT-509": "E",
+    "BALQIS BLOCK B_APARTMENT-510": "B",
+    "BALQIS BLOCK B_APARTMENT-511": "D",
+    "BALQIS BLOCK B_APARTMENT-512": "E",
+    "BALQIS BLOCK B_APARTMENT-513": "E",
+    "BALQIS BLOCK B_APARTMENT-514": "A",
+    "BALQIS BLOCK B_APARTMENT-515": "E",
+    "BALQIS BLOCK B_APARTMENT-516": "B",
+    "BALQIS BLOCK B_APARTMENT-601": "A",
+    "BALQIS BLOCK B_APARTMENT-602": "B",
+    "BALQIS BLOCK B_APARTMENT-603": "B",
+    "BALQIS BLOCK B_APARTMENT-604": "E",
+    "BALQIS BLOCK B_APARTMENT-605": "B",
+    "BALQIS BLOCK B_APARTMENT-606": "D",
+    "BALQIS BLOCK B_APARTMENT-607": "E",
+    "BALQIS BLOCK B_APARTMENT-608": "E",
+    "BALQIS BLOCK B_APARTMENT-609": "A",
+    "BALQIS BLOCK B_APARTMENT-610": "E",
+    "BALQIS BLOCK B_APARTMENT-611": "E",
+    "BALQIS BLOCK B_APARTMENT-612": "A",
+    "BALQIS BLOCK B_APARTMENT-613": "A",
+    "BALQIS BLOCK B_APARTMENT-614": "A",
+    "BALQIS BLOCK B_APARTMENT-615": "A",
+    "BALQIS BLOCK B_APARTMENT-616": "A",
+    "BALQIS BLOCK B_APARTMENT-701": "A",
+    "BALQIS BLOCK B_APARTMENT-702": "B",
+    "BALQIS BLOCK B_APARTMENT-703": "D",
+    "BALQIS BLOCK B_APARTMENT-704": "A",
+    "BALQIS BLOCK B_APARTMENT-705": "A",
+    "BALQIS BLOCK B_APARTMENT-706": "A",
+    "BALQIS BLOCK B_APARTMENT-707": "A",
+    "BALQIS BLOCK B_APARTMENT-708": "A",
+    "BALQIS BLOCK B_APARTMENT-709": "E",
+    "BALQIS BLOCK B_APARTMENT-710": "A",
+    "BALQIS BLOCK B_APARTMENT-711": "A",
+    "BALQIS BLOCK B_APARTMENT-712": "A",
+    "BALQIS BLOCK B_APARTMENT-713": "A",
+    "BALQIS BLOCK B_APARTMENT-714": "A",
+    "BALQIS BLOCK B_APARTMENT-715": "E",
+    "BALQIS BLOCK B_APARTMENT-716": "A",
+    "BALQIS BLOCK B_APARTMENT-801": "A",
+    "BALQIS BLOCK B_APARTMENT-802": "A",
+    "BALQIS BLOCK B_APARTMENT-803": "D",
+    "BALQIS BLOCK B_APARTMENT-804": "D",
+    "BALQIS BLOCK B_APARTMENT-805": "B",
+    "BALQIS BLOCK B_APARTMENT-806": "A",
+    "BALQIS BLOCK B_APARTMENT-807": "B",
+    "BALQIS BLOCK B_APARTMENT-808": "A",
+    "BALQIS BLOCK B_APARTMENT-809": "A",
+    "BALQIS BLOCK B_APARTMENT-810": "A",
+    "BALQIS BLOCK B_APARTMENT-811": "A",
+    "BALQIS BLOCK B_APARTMENT-812": "A",
+    "BALQIS BLOCK B_APARTMENT-813": "E",
+    "BALQIS BLOCK B_APARTMENT-814": "A",
+    "BALQIS BLOCK B_APARTMENT-815": "E",
+    "BALQIS BLOCK B_APARTMENT-816": "E",
+    "BALQIS BLOCK B_APARTMENT-901": "A",
+    "BALQIS BLOCK B_APARTMENT-902": "D",
+    "BALQIS BLOCK B_APARTMENT-903": "A",
+    "BALQIS BLOCK B_APARTMENT-904": "E",
+    "BALQIS BLOCK B_APARTMENT-905": "A",
+    "BALQIS BLOCK B_APARTMENT-906": "A",
+    "BALQIS BLOCK B_APARTMENT-907": "B",
+    "BALQIS BLOCK B_APARTMENT-908": "A+",
+    "BALQIS BLOCK B_APARTMENT-909": "A",
+    "BALQIS BLOCK B_APARTMENT-910": "A",
+    "BALQIS BLOCK B_APARTMENT-911": "A",
+    "BALQIS BLOCK B_APARTMENT-912": "A",
+    "BALQIS BLOCK B_APARTMENT-913": "B",
+    "BALQIS BLOCK B_APARTMENT-914": "A",
+    "BALQIS BLOCK C_APARTMENT-1001": "B",
+    "BALQIS BLOCK C_APARTMENT-1002": "A",
+    "BALQIS BLOCK C_APARTMENT-1003": "B",
+    "BALQIS BLOCK C_APARTMENT-1004": "A",
+    "BALQIS BLOCK C_APARTMENT-1005": "A",
+    "BALQIS BLOCK C_APARTMENT-1006": "A",
+    "BALQIS BLOCK C_APARTMENT-1007": "A",
+    "BALQIS BLOCK C_APARTMENT-1008": "A",
+    "BALQIS BLOCK C_APARTMENT-1101": "D",
+    "BALQIS BLOCK C_APARTMENT-1102": "E",
+    "BALQIS BLOCK C_APARTMENT-601": "A",
+    "BALQIS BLOCK C_APARTMENT-602": "E",
+    "BALQIS BLOCK C_APARTMENT-603": "A",
+    "BALQIS BLOCK C_APARTMENT-604": "D",
+    "BALQIS BLOCK C_APARTMENT-605": "D",
+    "BALQIS BLOCK C_APARTMENT-606": "E",
+    "BALQIS BLOCK C_APARTMENT-607": "A",
+    "BALQIS BLOCK C_APARTMENT-608": "E",
+    "BALQIS BLOCK C_APARTMENT-701": "A",
+    "BALQIS BLOCK C_APARTMENT-702": "A",
+    "BALQIS BLOCK C_APARTMENT-703": "A",
+    "BALQIS BLOCK C_APARTMENT-704": "A",
+    "BALQIS BLOCK C_APARTMENT-705": "B",
+    "BALQIS BLOCK C_APARTMENT-706": "A",
+    "BALQIS BLOCK C_APARTMENT-707": "B",
+    "BALQIS BLOCK C_APARTMENT-708": "B",
+    "BALQIS BLOCK C_APARTMENT-801": "B",
+    "BALQIS BLOCK C_APARTMENT-802": "A",
+    "BALQIS BLOCK C_APARTMENT-803": "D",
+    "BALQIS BLOCK C_APARTMENT-804": "E",
+    "BALQIS BLOCK C_APARTMENT-805": "A",
+    "BALQIS BLOCK C_APARTMENT-806": "D",
+    "BALQIS BLOCK C_APARTMENT-807": "A",
+    "BALQIS BLOCK C_APARTMENT-808": "A",
+    "BALQIS BLOCK C_APARTMENT-901": "A",
+    "BALQIS BLOCK C_APARTMENT-902": "A",
+    "BALQIS BLOCK C_APARTMENT-903": "E",
+    "BALQIS BLOCK C_APARTMENT-904": "A",
+    "BALQIS BLOCK C_APARTMENT-905": "A",
+    "BALQIS BLOCK C_APARTMENT-906": "A",
+    "BALQIS BLOCK C_APARTMENT-907": "A",
+    "BALQIS BLOCK C_APARTMENT-908": "E",
+    "BALQIS VILLAS_VILLA-1": "A",
+    "BALQIS VILLAS_VILLA-10": "B",
+    "BALQIS VILLAS_VILLA-11": "B",
+    "BALQIS VILLAS_VILLA-12": "E",
+    "BALQIS VILLAS_VILLA-13": "E",
+    "BALQIS VILLAS_VILLA-14": "A",
+    "BALQIS VILLAS_VILLA-15": "A",
+    "BALQIS VILLAS_VILLA-16": "A",
+    "BALQIS VILLAS_VILLA-17": "D",
+    "BALQIS VILLAS_VILLA-18": "A",
+    "BALQIS VILLAS_VILLA-19": "A",
+    "BALQIS VILLAS_VILLA-2": "A",
+    "BALQIS VILLAS_VILLA-20": "A",
+    "BALQIS VILLAS_VILLA-21": "E",
+    "BALQIS VILLAS_VILLA-22": "A",
+    "BALQIS VILLAS_VILLA-23": "F",
+    "BALQIS VILLAS_VILLA-24": "B",
+    "BALQIS VILLAS_VILLA-25": "A",
+    "BALQIS VILLAS_VILLA-26": "A",
+    "BALQIS VILLAS_VILLA-27": "E",
+    "BALQIS VILLAS_VILLA-28": "A",
+    "BALQIS VILLAS_VILLA-29": "E",
+    "BALQIS VILLAS_VILLA-3": "A",
+    "BALQIS VILLAS_VILLA-30": "A",
+    "BALQIS VILLAS_VILLA-31": "D",
+    "BALQIS VILLAS_VILLA-32": "A",
+    "BALQIS VILLAS_VILLA-33": "A",
+    "BALQIS VILLAS_VILLA-34": "A",
+    "BALQIS VILLAS_VILLA-4": "A",
+    "BALQIS VILLAS_VILLA-5": "D",
+    "BALQIS VILLAS_VILLA-6": "D",
+    "BALQIS VILLAS_VILLA-7": "A",
+    "BALQIS VILLAS_VILLA-8": "A",
+    "BALQIS VILLAS_VILLA-9": "A"
   },
   "_unitsWeek": "2026-W34",
   "_unitsDate": "2026-08-19"
