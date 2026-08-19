@@ -3368,11 +3368,36 @@ async function initOppMsal() {
   if (oppAccount) oppMsalInstance.setActiveAccount(oppAccount);
 }
 
+function oppNeedsInteraction(e) {
+  if (typeof msal !== 'undefined' && msal.InteractionRequiredAuthError && (e instanceof msal.InteractionRequiredAuthError)) return true;
+  var t = String((e && (e.errorCode || '')) + ' ' + (e && (e.message || e))) ;
+  return /interaction_required|consent_required|login_required|no_tokens_found|monitor_window_timeout|refresh_token_expired|invalid_grant|AADSTS160021|AADSTS50058|AADSTS50076|AADSTS50079|AADSTS70008|AADSTS700082|AADSTS700084/i.test(t);
+}
 async function acquireOppCrmToken() {
   if (!oppAccount) throw new Error('No authenticated user');
-  const r = await oppMsalInstance.acquireTokenSilent({ ...OPP_CRM_TOKEN_REQUEST, account: oppAccount });
-  oppCrmToken = r.accessToken;
-  return oppCrmToken;
+  try {
+    const r = await oppMsalInstance.acquireTokenSilent({ ...OPP_CRM_TOKEN_REQUEST, account: oppAccount });
+    oppCrmToken = r.accessToken;
+    return oppCrmToken;
+  } catch (e) {
+    if (!oppNeedsInteraction(e)) throw e;
+    // Cached account but the Entra ID session is gone (e.g. AADSTS160021) -
+    // silent renewal is impossible, so fall back to an interactive popup.
+    try {
+      const r2 = await oppMsalInstance.acquireTokenPopup({ ...OPP_CRM_TOKEN_REQUEST, account: oppAccount });
+      if (r2 && r2.account) { oppAccount = r2.account; oppMsalInstance.setActiveAccount(oppAccount); }
+      oppCrmToken = r2.accessToken;
+      try { if (typeof updateAuthHeader === 'function') updateAuthHeader(); } catch (_e) {}
+      return oppCrmToken;
+    } catch (e2) {
+      // Popup blocked (no user gesture) or dismissed - surface it instead of failing silently.
+      try { setLiveOppStatus('sign in', '#C0392B'); } catch (_e) {}
+      try { if (typeof toast === 'function') toast('Microsoft session expired - click "Live Opps" (or reload and SIGN IN) to reconnect.', 'error'); } catch (_e) {}
+      var err = new Error('interactive sign-in required: ' + (e2 && (e2.message || e2)));
+      err.interactionRequired = true;
+      throw err;
+    }
+  }
 }
 
 async function oppCrmGet(url) {
@@ -3986,9 +4011,23 @@ window.addEventListener('load', function () {
   initOppMsal().then(async function () {
     if (oppAccount) {
       updateAuthHeader();
-      dismissSplash();
-      try { await goLiveOpps(); }
-      catch (e) { console.warn('Live load failed:', e.message); }
+      // Validate the session BEFORE dismissing the splash: a cached MSAL account
+      // whose Entra ID session has expired (AADSTS160021) must go back through
+      // the SIGN IN gate, otherwise the dashboard renders with zero S&C bookings.
+      try {
+        await acquireOppCrmToken();
+        dismissSplash();
+        await goLiveOpps();
+      } catch (e) {
+        if (e && e.interactionRequired) {
+          console.warn('Silent session expired - interactive sign-in required:', e.message);
+          var se = document.getElementById('splashErr');
+          if (se) se.textContent = 'Your Microsoft session has expired - please sign in again.';
+        } else {
+          dismissSplash();
+          console.warn('Live load failed:', e.message);
+        }
+      }
     }
   }).catch(function (e) { console.warn('MSAL init:', e.message); });
 });
